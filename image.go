@@ -388,20 +388,16 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 	return Image{Body: buf, Mime: mime}, nil
 }
 
-func AddWatermarkImage (o ImageOptions, buf2 []byte, opts bimg.Options)(Image, error){
-
+func AddWatermarkImage (o ImageOptions, buf []byte, opts bimg.Options)(Image, error){
     if o.CustomWatermark != "" {
-
         o.Image = o.CustomWatermark;
         if o.WatermarkOpacity != 0 {
             o.Opacity = o.WatermarkOpacity
         } else {
             o.Opacity = 1.2
         }
-
-        return watermarkImage(buf2, o)
+        return watermarkImage(buf, o)
     }else{
-        return Process(buf2, opts)
+        return Process(buf, opts)
     }
-
 }
