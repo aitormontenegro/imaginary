@@ -30,7 +30,6 @@ type ImageOptions struct {
 	Sigma         float64
 	MinAmpl       float64
 	Text          string
-    Image         string
 	Font          string
 	Type          string
 	Color         []uint8
@@ -39,6 +38,9 @@ type ImageOptions struct {
 	Gravity       bimg.Gravity
 	Colorspace    bimg.Interpretation
 	Operations    PipelineOperations
+    Image         string
+    WatermarkOpacity       float32
+    CustomWatermark     string
 }
 
 // PipelineOperation represents the structure for an operation field.
