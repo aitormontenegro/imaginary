@@ -23,6 +23,7 @@ var OperationsMap = map[string]Operation{
 	"zoom":      Zoom,
 	"convert":   Convert,
 	"watermark": Watermark,
+    "watermarkImage": watermarkImage,
 	"blur":      GaussianBlur,
 	"smartcrop": SmartCrop,
 	"fit":       Fit,
@@ -263,6 +264,50 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 
 	return Process(buf, opts)
 }
+
+func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
+
+    aitorfile, err := os.Open(o.Image)
+        if err != nil {
+            fmt.Fprintf(os.Stderr, "%s\n", err)
+            return Image{}, NewError("Invalid watermark image.", BadRequest)
+        }
+    fmt.Printf("4.1 size = %s \n", o.Image)
+
+    imageBuf, _ := ioutil.ReadAll(aitorfile)
+    if len(imageBuf) == 0 {
+        return Image{}, NewError("Invalid watermark image. Buffer = 0", BadRequest)
+    }
+    fmt.Printf("4.2 size = %d \n", len(imageBuf))
+
+    meta, err := bimg.Metadata(buf)
+    if err != nil {
+        return Image{}, NewError("Cannot retrieve image metadata: %s"+err.Error(), BadRequest)
+    }
+    metawatermark , err := bimg.Metadata(imageBuf)
+    if err != nil {
+        return Image{}, NewError("Cannot retrieve image metadata: %s"+err.Error(), BadRequest)
+    }
+
+    var origimagwidth = meta.Size.Width;
+    var origimagheight = meta.Size.Height;
+    var waterimagwidth = metawatermark.Size.Width;
+    var waterimagheight = metawatermark.Size.Height;
+
+    var settop = (origimagheight/2) - (waterimagheight/2)
+    var setleft = (origimagwidth/2) - (waterimagwidth/2)
+
+    opts := BimgOptions(o)
+    opts.WatermarkImage.Left = setleft;
+    opts.WatermarkImage.Top = settop;
+    opts.WatermarkImage.Buf = imageBuf;
+    opts.WatermarkImage.Opacity = o.Opacity;
+    opts.WatermarkImage.Gravity = 1;
+
+    return Process(buf, opts)
+}
+
+
 
 func GaussianBlur(buf []byte, o ImageOptions) (Image, error) {
 	if o.Sigma == 0 && o.MinAmpl == 0 {
