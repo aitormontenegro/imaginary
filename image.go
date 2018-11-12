@@ -126,7 +126,8 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Embed = true
 
-	return Process(buf, opts)
+	//return Process(buf, opts)
+	return AddWatermarkImage(o, buf, opts)
 }
 
 func Enlarge(buf []byte, o ImageOptions) (Image, error) {
@@ -308,8 +309,6 @@ func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
     return Process(buf, opts)
 }
 
-
-
 func GaussianBlur(buf []byte, o ImageOptions) (Image, error) {
 	if o.Sigma == 0 && o.MinAmpl == 0 {
 		return Image{}, NewError("Missing required param: sigma or minampl", BadRequest)
@@ -388,4 +387,22 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 
 	mime := GetImageMimeType(bimg.DetermineImageType(buf))
 	return Image{Body: buf, Mime: mime}, nil
+}
+
+func AddWatermarkImage (o ImageOptions, buf2 []byte, opts bimg.Options)(Image, error){
+
+    if o.CustomWatermark != "" {
+
+        o.Image = o.CustomWatermark;
+        if o.WatermarkOpacity != 0 {
+            o.Opacity = o.WatermarkOpacity
+        } else {
+            o.Opacity = 1.2
+        }
+
+        return watermarkImage(buf2, o)
+    }else{
+        return Process(buf2, opts)
+    }
+
 }
