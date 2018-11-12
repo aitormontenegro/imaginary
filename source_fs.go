@@ -74,10 +74,10 @@ func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, er
 	cach := ""
 
 	if _, err := os.Stat(fullcachedirpathandfile); os.IsNotExist(err) {
-//		fmt.Printf("Return original file path\n")
+		fmt.Printf("Return original file path\n")
 		cach = fullcachedirpathandfile
 	}else{
-//		fmt.Printf("Return cached file path\n")
+		fmt.Printf("Return cached file path\n")
 		file = fullcachedirpathandfile
 	}
 
