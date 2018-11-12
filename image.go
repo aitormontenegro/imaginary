@@ -96,7 +96,7 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 		opts.Crop = true
 	}
 
-	return Process(buf, opts)
+	return AddWatermarkImage(o, buf, opts)
 }
 
 func Fit(buf []byte, o ImageOptions) (Image, error) {
@@ -126,7 +126,6 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Embed = true
 
-	//return Process(buf, opts)
 	return AddWatermarkImage(o, buf, opts)
 }
 
@@ -142,7 +141,7 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 		opts.Crop = true
 	}
 
-	return Process(buf, opts)
+	return AddWatermarkImage(o, buf, opts)
 }
 
 func Extract(buf []byte, o ImageOptions) (Image, error) {
@@ -166,7 +165,7 @@ func Crop(buf []byte, o ImageOptions) (Image, error) {
 
 	opts := BimgOptions(o)
 	opts.Crop = true
-	return Process(buf, opts)
+	return AddWatermarkImage(o, buf, opts)
 }
 
 func SmartCrop(buf []byte, o ImageOptions) (Image, error) {
@@ -177,7 +176,7 @@ func SmartCrop(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Crop = true
 	opts.Gravity = bimg.GravitySmart
-	return Process(buf, opts)
+	return AddWatermarkImage(o, buf, opts)
 }
 
 func Rotate(buf []byte, o ImageOptions) (Image, error) {
@@ -244,7 +243,7 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 	}
 	opts := BimgOptions(o)
 
-	return Process(buf, opts)
+	return AddWatermarkImage(o, buf, opts)
 }
 
 func Watermark(buf []byte, o ImageOptions) (Image, error) {
