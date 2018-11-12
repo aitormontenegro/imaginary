@@ -517,18 +517,14 @@ vips_watermark_image(VipsImage *in, VipsImage *sub, VipsImage **out, WatermarkIm
 
 	// Create a mask image based on the alpha band from the watermark image
 	// and place it in the right position
-	if (
-		vips_extract_band(t[1], &t[3], t[1]->Bands - 1, "n", 1, NULL) ||
-		vips_linear1(t[3], &t[4], o->Opacity, 0.0, NULL) ||
-		vips_cast(t[4], &t[5], VIPS_FORMAT_UCHAR, NULL) ||
-		vips_copy(t[5], &t[6], "interpretation", t[0]->Type, NULL) ||
-		vips_embed(t[6], &t[7], o->Left, o->Top, t[0]->Xsize, t[0]->Ysize, NULL))	{
+	if ( vips_linear1(t[1], &t[4], o->Opacity, 0.0, NULL) ||
+		vips_embed(t[4], &t[7], o->Left, o->Top, t[0]->Xsize, t[0]->Ysize, NULL))	{
 			g_object_unref(base);
-		return 1;
+			return 1;
 	}
 
 	// Blend the mask and watermark image and write to output.
-	if (vips_ifthenelse(t[7], t[2], t[0], out, "blend", TRUE, NULL)) {
+	if (vips_composite2(t[7], t[2], &t[8], VIPS_BLEND_MODE_HARD_LIGHT, NULL) || vips_composite2(t[0], t[8], out, VIPS_BLEND_MODE_SCREEN, NULL)) {
 		g_object_unref(base);
 		return 1;
 	}
