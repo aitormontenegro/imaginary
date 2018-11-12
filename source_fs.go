@@ -27,7 +27,7 @@ func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
 		return nil, ErrMissingParamFile
 	}
 
-	file,cache err := s.buildPath_cache(file)
+	file, cache, err := s.buildPath_cache(file)
 	if err != nil {
 		return nil, err
 	}
