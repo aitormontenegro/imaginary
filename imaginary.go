@@ -35,6 +35,7 @@ var (
 	aMaxAllowedSize     = flag.Int("max-allowed-size", 0, "Restrict maximum size of http image source (in bytes)")
 	aKey                = flag.String("key", "", "Define API key for authorization")
 	aMount              = flag.String("mount", "", "Mount server local directory")
+    aCacheDir           = flag.String("cachedir", "", "Local cache directory directory")
 	aCertFile           = flag.String("certfile", "", "TLS certificate file path")
 	aKeyFile            = flag.String("keyfile", "", "TLS private key file path")
 	aAuthorization      = flag.String("authorization", "", "Defines a constant Authorization header value passed to all the image source servers. -enable-url-source flag must be defined. This overwrites authorization headers forwarding behavior via X-Forward-Authorization")
@@ -78,6 +79,7 @@ Options:
   -disable-endpoints        Comma separated endpoints to disable. E.g: form,crop,rotate,health [default: ""]
   -key <key>                Define API key for authorization
   -mount <path>             Mount server local directory
+  -cachedir <path>          Cache directory
   -http-cache-ttl <num>     The TTL in seconds. Adds caching headers to locally served files.
   -http-read-timeout <num>  HTTP read timeout in seconds [default: 30]
   -http-write-timeout <num> HTTP write timeout in seconds [default: 30]
@@ -136,6 +138,7 @@ func main() {
 		Concurrency:        *aConcurrency,
 		Burst:              *aBurst,
 		Mount:              *aMount,
+        CacheDir:           *aCacheDir,
 		CertFile:           *aCertFile,
 		KeyFile:            *aKeyFile,
 		Placeholder:        *aPlaceholder,
@@ -161,6 +164,10 @@ func main() {
 	if *aMount != "" {
 		checkMountDirectory(*aMount)
 	}
+
+    if *aCacheDir != "" {
+        checCacheDirectory(*aCacheDir)
+    }
 
 	// Validate HTTP cache param, if present
 	if *aHTTPCacheTTL != -1 {
@@ -252,6 +259,19 @@ func checkMountDirectory(path string) {
 	if path == "/" {
 		exitWithError("cannot mount root directory for security reasons")
 	}
+}
+
+func checkCacheDirectory(path string) {
+    src, err := os.Stat(path)
+    if err != nil {
+        exitWithError("error in cache directory: %s", err)
+    }
+    if src.IsDir() == false {
+        exitWithError("Cachedir path is not a directory: %s", path)
+    }
+    if path == "/" {
+        exitWithError("cannot mount root directory for security reasons")
+    }
 }
 
 func checkHttpCacheTtl(ttl int) {
