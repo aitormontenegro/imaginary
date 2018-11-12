@@ -166,7 +166,7 @@ func main() {
 	}
 
     if *aCacheDir != "" {
-        checCacheDirectory(*aCacheDir)
+        checkCacheDirectory(*aCacheDir)
     }
 
 	// Validate HTTP cache param, if present
