@@ -27,9 +27,14 @@ func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
 		return nil, ErrMissingParamFile
 	}
 
-	file, err := s.buildPath(file)
+	file,cache err := s.buildPath_cache(file)
 	if err != nil {
 		return nil, err
+	}
+
+	if cache != "" {
+		c := make(chan int64)
+		go defercache(file,cache,c)
 	}
 
 	return s.read(file)
@@ -57,4 +62,47 @@ func (s *FileSystemImageSource) getFileParam(r *http.Request) string {
 
 func init() {
 	RegisterSource(ImageSourceTypeFileSystem, NewFileSystemImageSource)
+}
+
+func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, error) {
+	// first --> return original file or cached file
+	// second -> "" if cached file, string if file has to be cached
+	// third --> error
+
+    var fullcachedirpathandfile = s.Config.CacheDirPath + file
+	file = path.Clean(path.Join(s.Config.MountPath, file))
+	cach := ""
+
+	if _, err := os.Stat(fullcachedirpathandfile); os.IsNotExist(err) {
+//		fmt.Printf("Return original file path\n")
+		cach = fullcachedirpathandfile
+	}else{
+//		fmt.Printf("Return cached file path\n")
+		file = fullcachedirpathandfile
+	}
+
+    fmt.Printf("\nReturn file --> %s\n", file);
+		if strings.HasPrefix(file, s.Config.MountPath) == false && strings.HasPrefix(file,s.Config.CacheDirPath) == false {
+			return "","", ErrInvalidFilePath
+		}
+
+	return file, cach, nil
+
+}
+
+func defercache(src, dst string, c chan int64) () {
+	nBytes, err := dofilecache(src, dst)
+	if err != nil || nBytes == 0 {
+		fmt.Printf("Copy operation to cache failed %q\n", err)
+		err := os.Remove(dst)
+		if err != nil {
+			  fmt.Println(err)
+			    return
+		}
+		//delete file
+	} else {
+		fmt.Printf("File cached!! (Image Generated: %d bytes, path: %s)\n", nBytes, dst)
+	}
+	c <- nBytes
+	close(c)
 }
