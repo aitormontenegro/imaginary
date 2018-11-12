@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"path"
 	"strings"
+	"os"
+	"fmt"
 )
 
 const ImageSourceTypeFileSystem ImageSourceType = "fs"
@@ -105,4 +107,51 @@ func defercache(src, dst string, c chan int64) () {
 	}
 	c <- nBytes
 	close(c)
+}
+
+func dofilecache(src, dst string) (int64, error) {
+
+	 var fullcachedirpath = filepath.Dir(dst);
+
+	 if _, err := os.Stat(fullcachedirpath); os.IsNotExist(err) {
+		err = os.MkdirAll(fullcachedirpath, 0770)
+		if err != nil {
+			fmt.Printf("mkdir recursive operation failed %q\n", err)
+		}
+	}
+
+        sourceFileStat, err := os.Stat(src)
+        if err != nil {
+                return 0, err
+        }
+        if !sourceFileStat.Mode().IsRegular() {
+                return 0, fmt.Errorf("%s is not a regular file", src)
+        }
+
+		source, err := ioutil.ReadFile(src)
+        if err != nil {
+                return 0, err
+        }
+
+		var o ImageOptions;
+		o.Width = 1200;
+		o.Height = 840;
+		o.Quality = 80;
+		o.Colorspace = 22;
+		o.StripMetadata = true
+
+		image, err := Fit(source, o)
+
+		var destinationFile = dst
+		err = ioutil.WriteFile(destinationFile, image.Body, 0774)
+
+
+		if err != nil {
+			fmt.Println("Error creating file %s", destinationFile)
+			fmt.Println(err)
+			return 0, err
+		}
+
+		return int64(len(image.Body)), err
+
 }
