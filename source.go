@@ -12,6 +12,7 @@ type SourceConfig struct {
 	AuthForwarding  bool
 	Authorization   string
 	MountPath       string
+    CacheDirPath    string
 	Type            ImageSourceType
 	AllowedOrigings []*url.URL
 	MaxAllowedSize  int
@@ -34,6 +35,7 @@ func LoadSources(o ServerOptions) {
 		imageSourceMap[name] = factory(&SourceConfig{
 			Type:            name,
 			MountPath:       o.Mount,
+            CacheDirPath:    o.CacheDir,
 			AuthForwarding:  o.AuthForwarding,
 			Authorization:   o.Authorization,
 			AllowedOrigings: o.AllowedOrigins,
