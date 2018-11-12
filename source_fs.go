@@ -7,6 +7,7 @@ import (
 	"strings"
 	"os"
 	"fmt"
+	"path/filepath"
 )
 
 const ImageSourceTypeFileSystem ImageSourceType = "fs"
