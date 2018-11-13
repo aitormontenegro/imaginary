@@ -148,7 +148,6 @@ func dofilecache(src, dst string) (int64, error) {
         o.Width = 1200;
         o.Height = 840;
     }
-
 		o.Quality = 80;
 		o.Colorspace = 22;
 		o.StripMetadata = true
