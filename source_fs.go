@@ -8,6 +8,7 @@ import (
 	"os"
 	"fmt"
 	"path/filepath"
+    "gopkg.in/h2non/bimg.v1"
 )
 
 const ImageSourceTypeFileSystem ImageSourceType = "fs"
@@ -134,12 +135,24 @@ func dofilecache(src, dst string) (int64, error) {
                 return 0, err
         }
 
-		var o ImageOptions;
-		o.Width = 1200;
-		o.Height = 840;
+	meta, err := bimg.Metadata(source)
+	 if err != nil {
+        return 0, NewError("Cannot retrieve image metadata: %s"+err.Error(), BadRequest)
+    }
+
+	var o ImageOptions;
+    if meta.Size.Width < 1200 || meta.Size.Height < 840 {
+        o.Width = meta.Size.Width
+        o.Height = meta.Size.Height
+    }else{
+        o.Width = 1200;
+        o.Height = 840;
+    }
+
 		o.Quality = 80;
 		o.Colorspace = 22;
 		o.StripMetadata = true
+		o.Embed = true
 
 		image, err := Fit(source, o)
 

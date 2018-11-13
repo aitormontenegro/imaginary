@@ -109,19 +109,24 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 		return Image{}, err
 	}
 
-	// if input ratio > output ratio
-	// (calculation multiplied through by denominators to avoid float division)
-	if dims.Width*o.Height > o.Width*dims.Height {
-		// constrained by width
-		if dims.Width != 0 {
-			o.Height = o.Width * dims.Height / dims.Width
-		}
-	} else {
-		// constrained by height
-		if dims.Height != 0 {
-			o.Width = o.Height * dims.Width / dims.Height
-		}
-	}
+    if dims.Width < o.Width || dims.Height < o.Height {
+        o.Width = dims.Width
+        o.Height = dims.Height
+    }else{
+        // if input ratio > output ratio
+        // (calculation multiplied through by denominators to avoid float division)
+        if dims.Width*o.Height > o.Width*dims.Height {
+            // constrained by width
+            if dims.Width != 0 {
+                o.Height = o.Width * dims.Height / dims.Width
+            }
+        } else {
+            // constrained by height
+            if dims.Height != 0 {
+                o.Width = o.Height * dims.Width / dims.Height
+            }
+        }
+    }
 
 	opts := BimgOptions(o)
 	opts.Embed = true
@@ -289,8 +294,8 @@ func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
         return Image{}, NewError("Cannot retrieve image metadata: %s"+err.Error(), BadRequest)
     }
 
-    var origimagwidth = meta.Size.Width;
-    var origimagheight = meta.Size.Height;
+    var origimagwidth = o.Width;
+    var origimagheight = o.Height;
     var waterimagwidth = metawatermark.Size.Width;
     var waterimagheight = metawatermark.Size.Height;
 
