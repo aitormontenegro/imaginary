@@ -295,8 +295,8 @@ func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
     var waterimagwidth = metawatermark.Size.Width;
     var waterimagheight = metawatermark.Size.Height;
 
-    var settop = (origimagheight/2) - (waterimagheight/2)
-    var setleft = (origimagwidth/2) - (waterimagwidth/2)
+    var settop = (origimagheight/2) - (waterimagheight/2) + 1
+    var setleft = (origimagwidth/2) - (waterimagwidth/2) + 1
 
     opts := BimgOptions(o)
     opts.WatermarkImage.Left = setleft;
