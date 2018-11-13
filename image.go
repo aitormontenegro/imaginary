@@ -285,10 +285,6 @@ func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
         return Image{}, NewError("Invalid watermark image. Buffer = 0", BadRequest)
     }
 
-    meta, err := bimg.Metadata(buf)
-    if err != nil {
-        return Image{}, NewError("Cannot retrieve image metadata: %s"+err.Error(), BadRequest)
-    }
     metawatermark , err := bimg.Metadata(imageBuf)
     if err != nil {
         return Image{}, NewError("Cannot retrieve image metadata: %s"+err.Error(), BadRequest)
