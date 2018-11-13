@@ -77,14 +77,14 @@ func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, er
 	cach := ""
 
 	if _, err := os.Stat(fullcachedirpathandfile); os.IsNotExist(err) {
-		fmt.Printf("Return original file path\n")
+		debug("Return original file path\n")
 		cach = fullcachedirpathandfile
 	}else{
-		fmt.Printf("Return cached file path\n")
+		debug("Return cached file path\n")
 		file = fullcachedirpathandfile
 	}
 
-    fmt.Printf("\nReturn file --> %s\n", file);
+	debug("Return file: %s\n", file);
 		if strings.HasPrefix(file, s.Config.MountPath) == false && strings.HasPrefix(file,s.Config.CacheDirPath) == false {
 			return "","", ErrInvalidFilePath
 		}
@@ -104,7 +104,7 @@ func defercache(src, dst string, c chan int64) () {
 		}
 		//delete file
 	} else {
-		fmt.Printf("File cached!! (Image Generated: %d bytes, path: %s)\n", nBytes, dst)
+		debug("File cached!! (Image Generated: %d bytes, path: %s)\n", nBytes, dst)
 	}
 	c <- nBytes
 	close(c)
