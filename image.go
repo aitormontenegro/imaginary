@@ -304,6 +304,8 @@ func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
     opts.WatermarkImage.Buf = imageBuf;
     opts.WatermarkImage.Opacity = o.Opacity;
 
+    debug("Adding WatermarkImage\n")
+
     return Process(buf, opts)
 }
 
