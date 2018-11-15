@@ -306,6 +306,8 @@ func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
 
     debug("Adding WatermarkImage\n")
 
+    aitorfile.Close();
+
     return Process(buf, opts)
 }
 
