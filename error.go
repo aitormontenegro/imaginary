@@ -26,14 +26,14 @@ var (
 	ErrInvalidApiKey        = NewError("Invalid or missing API key", Unauthorized)
 	ErrMethodNotAllowed     = NewError("Method not allowed", NotAllowed)
 	ErrUnsupportedMedia     = NewError("Unsupported media type", Unsupported)
-	ErrOutputFormat         = NewError("Unsupported output image format", BadRequest)
-	ErrEmptyBody            = NewError("Empty image", BadRequest)
-	ErrMissingParamFile     = NewError("Missing required param: file", BadRequest)
-	ErrInvalidFilePath      = NewError("Invalid file path2", NotFound)
-	ErrInvalidImageURL      = NewError("Invalid image URL", BadRequest)
-	ErrMissingImageSource   = NewError("Cannot process the image due to missing or invalid params", BadRequest)
+	ErrOutputFormat         = NewError("Unsupported output image format", NotFound)
+	ErrEmptyBody            = NewError("Empty image", NotFound)
+	ErrMissingParamFile     = NewError("Missing required param: file", NotFound)
+	ErrInvalidFilePath      = NewError("Invalid file path", NotFound)
+	ErrInvalidImageURL      = NewError("Invalid image URL", NotFound)
+	ErrMissingImageSource   = NewError("Cannot process the image due to missing or invalid params", NotFound)
 	ErrNotImplemented       = NewError("Not implemented endpoint", NotImplemented)
-	ErrInvalidURLSignature  = NewError("Invalid URL signature", BadRequest)
+	ErrInvalidURLSignature  = NewError("Invalid URL signature", NotFound)
 	ErrURLSignatureMismatch = NewError("URL signature mismatch", Forbidden)
 )
 
@@ -99,8 +99,8 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o
 
 	if _err != nil {
 		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusBadRequest)
-		w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", _err.Error(), BadRequest)))
+		w.WriteHeader(http.StatusNotFound)
+		w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", _err.Error(), NotFound)))
 		return _err
 	}
 
