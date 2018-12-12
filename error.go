@@ -29,7 +29,7 @@ var (
 	ErrOutputFormat         = NewError("Unsupported output image format", BadRequest)
 	ErrEmptyBody            = NewError("Empty image", BadRequest)
 	ErrMissingParamFile     = NewError("Missing required param: file", BadRequest)
-	ErrInvalidFilePath      = NewError("Invalid file path", NotFound)
+	ErrInvalidFilePath      = NewError("Invalid file path2", NotFound)
 	ErrInvalidImageURL      = NewError("Invalid image URL", BadRequest)
 	ErrMissingImageSource   = NewError("Cannot process the image due to missing or invalid params", BadRequest)
 	ErrNotImplemented       = NewError("Not implemented endpoint", NotImplemented)
