@@ -25,7 +25,6 @@ var OperationsMap = map[string]Operation{
 	"zoom":      Zoom,
 	"convert":   Convert,
 	"watermark": Watermark,
-    "watermarkImage": watermarkImage,
 	"blur":      GaussianBlur,
 	"smartcrop": SmartCrop,
 	"fit":       Fit,
@@ -96,7 +95,7 @@ func Resize(buf []byte, o ImageOptions) (Image, error) {
 		opts.Crop = true
 	}
 
-	return AddWatermarkImage(o, buf, opts)
+	return Process(buf, opts)
 }
 
 func Fit(buf []byte, o ImageOptions) (Image, error) {
@@ -131,7 +130,7 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Embed = true
 
-	return AddWatermarkImage(o, buf, opts)
+	return Process(buf, opts)
 }
 
 func Enlarge(buf []byte, o ImageOptions) (Image, error) {
@@ -146,7 +145,7 @@ func Enlarge(buf []byte, o ImageOptions) (Image, error) {
 		opts.Crop = true
 	}
 
-	return AddWatermarkImage(o, buf, opts)
+	return Process(buf, opts)
 }
 
 func Extract(buf []byte, o ImageOptions) (Image, error) {
@@ -170,7 +169,7 @@ func Crop(buf []byte, o ImageOptions) (Image, error) {
 
 	opts := BimgOptions(o)
 	opts.Crop = true
-	return AddWatermarkImage(o, buf, opts)
+	return Process(buf, opts)
 }
 
 func SmartCrop(buf []byte, o ImageOptions) (Image, error) {
@@ -181,7 +180,7 @@ func SmartCrop(buf []byte, o ImageOptions) (Image, error) {
 	opts := BimgOptions(o)
 	opts.Crop = true
 	opts.Gravity = bimg.GravitySmart
-	return AddWatermarkImage(o, buf, opts)
+	return Process(buf, opts)
 }
 
 func Rotate(buf []byte, o ImageOptions) (Image, error) {
@@ -248,7 +247,7 @@ func Convert(buf []byte, o ImageOptions) (Image, error) {
 	}
 	opts := BimgOptions(o)
 
-	return AddWatermarkImage(o, buf, opts)
+	return Process(buf, opts)
 }
 
 func Watermark(buf []byte, o ImageOptions) (Image, error) {
@@ -270,45 +269,6 @@ func Watermark(buf []byte, o ImageOptions) (Image, error) {
 	}
 
 	return Process(buf, opts)
-}
-
-func watermarkImage(buf []byte, o ImageOptions) (Image, error) {
-
-    aitorfile, err := os.Open(o.Image)
-        if err != nil {
-            fmt.Fprintf(os.Stderr, "%s\n", err)
-            return Image{}, NewError("Invalid watermark image.", BadRequest)
-        }
-
-    imageBuf, _ := ioutil.ReadAll(aitorfile)
-    if len(imageBuf) == 0 {
-        return Image{}, NewError("Invalid watermark image. Buffer = 0", BadRequest)
-    }
-
-    metawatermark , err := bimg.Metadata(imageBuf)
-    if err != nil {
-        return Image{}, NewError("Cannot retrieve image metadata: %s"+err.Error(), BadRequest)
-    }
-
-    var origimagwidth = o.Width;
-    var origimagheight = o.Height;
-    var waterimagwidth = metawatermark.Size.Width;
-    var waterimagheight = metawatermark.Size.Height;
-
-    var settop = (origimagheight/2) - (waterimagheight/2) + 1
-    var setleft = (origimagwidth/2) - (waterimagwidth/2) + 1
-
-    opts := BimgOptions(o)
-    opts.WatermarkImage.Left = setleft;
-    opts.WatermarkImage.Top = settop;
-    opts.WatermarkImage.Buf = imageBuf;
-    opts.WatermarkImage.Opacity = o.Opacity;
-
-    debug("Adding WatermarkImage\n")
-
-    aitorfile.Close();
-
-    return Process(buf, opts)
 }
 
 func GaussianBlur(buf []byte, o ImageOptions) (Image, error) {
@@ -393,18 +353,4 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
 
 	mime := GetImageMimeType(bimg.DetermineImageType(buf))
 	return Image{Body: buf, Mime: mime}, nil
-}
-
-func AddWatermarkImage (o ImageOptions, buf []byte, opts bimg.Options)(Image, error){
-    if o.CustomWatermark != "" {
-        o.Image = o.CustomWatermark;
-        if o.WatermarkOpacity != 0 {
-            o.Opacity = o.WatermarkOpacity
-        } else {
-            o.Opacity = 1.2
-        }
-        return watermarkImage(buf, o)
-    }else{
-        return Process(buf, opts)
-    }
 }
