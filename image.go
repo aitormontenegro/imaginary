@@ -5,9 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"os"
-	"io/ioutil"
-
 	"gopkg.in/h2non/bimg.v1"
 )
 
