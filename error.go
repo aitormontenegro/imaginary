@@ -121,7 +121,7 @@ func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOpt
 		return replyWithPlaceholder(req, w, err, o)
 	}
 
-	w.Header().Set("Content-Type", "application/json")
+	//w.Header().Set("Content-Type", "application/json")
 	//w.WriteHeader(err.HTTPCode())
     w.WriteHeader(http.StatusNotFound)
     //w.Write(err.JSON())
