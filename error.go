@@ -103,6 +103,10 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o
         w.Header().Set("Status:", "404")
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(fmt.Sprintf("{\"error2\":\"%s\", \"code\": %d}", _err.Error(), NotFound)))
+
+        http.Error(w, "my own error message", http.StatusForbidden)
+        http.Error(w, http.StatusText(http.StatusNotFound), http.StatusNotFound)
+
 		return _err
 	}
 
