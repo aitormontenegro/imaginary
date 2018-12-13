@@ -122,7 +122,8 @@ func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOpt
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(err.HTTPCode())
-	w.Write(err.JSON())
+	//w.WriteHeader(err.HTTPCode())
+    w.WriteHeader(http.StatusNotFound)
+    //w.Write(err.JSON())
 	return err
 }
