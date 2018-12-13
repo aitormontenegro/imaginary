@@ -99,6 +99,7 @@ func replyWithPlaceholder(req *http.Request, w http.ResponseWriter, err Error, o
 
 	if _err != nil {
 		w.Header().Set("Content-Type", "application/json")
+        w.Header().Set("Location:", "test.php")
 		w.WriteHeader(http.StatusNotFound)
 		w.Write([]byte(fmt.Sprintf("{\"error\":\"%s\", \"code\": %d}", _err.Error(), NotFound)))
 		return _err
