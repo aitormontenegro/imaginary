@@ -129,6 +129,7 @@ func dofilecache(src, dst string) (int64, error) {
         if !sourceFileStat.Mode().IsRegular() {
                 return 0, fmt.Errorf("%s is not a regular file", src)
         }
+		modifiedtime := sourceFileStat.ModTime()
 
 		source, err := ioutil.ReadFile(src)
         if err != nil {
@@ -157,6 +158,8 @@ func dofilecache(src, dst string) (int64, error) {
 
 		var destinationFile = dst
 		err = ioutil.WriteFile(destinationFile, image.Body, 0774)
+		os.Chtimes(destinationFile, modifiedtime, modifiedtime)
+
 
 
 		if err != nil {
