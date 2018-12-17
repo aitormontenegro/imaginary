@@ -5,7 +5,8 @@ import (
         "net/http"
         "strings"
         "time"
-    "os"
+        "os"
+        "crypto/md5"
         "crypto/hmac"
         "crypto/sha256"
         "encoding/base64"
@@ -157,22 +158,32 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
 
 func setLastModifiedHeaders(next http.Handler,o ServerOptions ) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-                defer next.ServeHTTP(w, r)
+            defer next.ServeHTTP(w, r)
 
-        tostatfile := o.CacheDir+r.URL.Query().Get("file")
+            tostatfile := o.CacheDir+r.URL.Query().Get("file")
 
-                if _, err := os.Stat(tostatfile); os.IsNotExist(err) {
-            tostatfile = o.Mount+r.URL.Query().Get("file")
-                }
+            if _, err := os.Stat(tostatfile); os.IsNotExist(err) {
+                tostatfile = o.Mount+r.URL.Query().Get("file")
+            }
 
         FileStat, err := os.Stat(tostatfile)
         if err != nil {
-                    w.Header().Add("last-modified", strings.Replace(time.Now().Format(time.RFC1123), "UTC", "GMT", -1))
+                customdate := strings.Replace(time.Now().Format(time.RFC1123), "CEST", "GMT", -1)
+                w.Header().Add("last-modified",customdate )
+                w.Header().Add("ETag",GetMD5Hash(customdate))
             }else{
-            customdate := strings.Replace(FileStat.ModTime().Format(time.RFC1123), "CEST", "GMT", -1)
-                    w.Header().Add("last-modified", customdate )
+                customdate := strings.Replace(FileStat.ModTime().Format(time.RFC1123), "CEST", "GMT", -1)
+                w.Header().Add("last-modified", customdate )
+                w.Header().Add("ETag",GetMD5Hash(customdate+tostatfile))
         }
         })
+}
+
+func GetMD5Hash(text string) string {
+    hasher := md5.New()
+    hasher.Write([]byte(text))
+    return hex.EncodeToString(hasher.Sum(nil))
+
 }
 
 func getCacheControl(ttl int) string {
