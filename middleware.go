@@ -91,7 +91,7 @@ func throttle(next http.Handler, o ServerOptions) http.Handler {
 
 func validate(next http.Handler, o ServerOptions) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-                if r.Method != "GET" && r.Method != "POST" {
+                if r.Method != "GET" && r.Method != "POST" && r.Method != "HEAD" {
                         ErrorReply(r, w, ErrMethodNotAllowed, o)
                         return
                 }
