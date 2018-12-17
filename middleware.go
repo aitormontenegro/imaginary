@@ -7,6 +7,7 @@ import (
         "time"
         "os"
         "crypto/md5"
+        "encoding/hex"
         "crypto/hmac"
         "crypto/sha256"
         "encoding/base64"
