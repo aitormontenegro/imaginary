@@ -144,7 +144,7 @@ func setCacheHeaders(next http.Handler, ttl int) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
                 defer next.ServeHTTP(w, r)
 
-                if r.Method != "GET" || isPublicPath(r.URL.Path) {
+                if (r.Method != "GET" && r.Method != "HEAD") || isPublicPath(r.URL.Path) {
                         return
                 }
 
