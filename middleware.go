@@ -171,11 +171,11 @@ func setLastModifiedHeaders(next http.Handler,o ServerOptions ) http.Handler {
         if err != nil {
                 customdate := strings.Replace(time.Now().Format(time.RFC1123), "CEST", "GMT", -1)
                 w.Header().Add("last-modified",customdate )
-                w.Header().Add("ETag",GetMD5Hash(customdate))
+                w.Header().Add("ETag","\""+GetMD5Hash(customdate)"\"")
             }else{
                 customdate := strings.Replace(FileStat.ModTime().Format(time.RFC1123), "CEST", "GMT", -1)
                 w.Header().Add("last-modified", customdate )
-                w.Header().Add("ETag",GetMD5Hash(customdate+tostatfile))
+                w.Header().Add("ETag","\"GetMD5Hash(customdate+tostatfile)+"\")
         }
         })
 }
