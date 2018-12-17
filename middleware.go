@@ -156,7 +156,8 @@ func getCacheControl(ttl int) string {
 	if ttl == 0 {
 		return "private, no-cache, no-store, must-revalidate"
 	}
-	return fmt.Sprintf("public, s-maxage=%d, max-age=%d, no-transform", ttl, ttl)
+//	return fmt.Sprintf("public, s-maxage=%d, max-age=%d, no-transform", ttl, ttl)
+	return fmt.Sprintf("public, max-age=%d", ttl, ttl)
 }
 
 func isPublicPath(path string) bool {
