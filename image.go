@@ -1,11 +1,13 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	"strings"
-	"gopkg.in/h2non/bimg.v1"
+   "encoding/json"
+   "errors"
+   "fmt"
+   "strings"
+   "gopkg.in/h2non/bimg.v1"
+   "os/exec"
+   "bytes"
 )
 
 // OperationsMap defines the allowed image transformation operations listed by name.
