@@ -349,14 +349,23 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
         return Image{Body: buforig, Mime: mime}, nil
     }
 
-    cmd := exec.Command("/usr/bin/composite", "-gravity","Center","/datos/contenido2/web/nuptic/assets/img/watermarks/watermark_es_UY.png", "-", "-")
-    cmd.Stdin = bytes.NewReader(buf)
-    modimage, err := cmd.Output()
-    if err != nil {
-        fmt.Printf("Error adding watermark: %s.\n", err);
+    debug("--> %+v",opts)
+    debug("--> %s",opts.CustomWatermark)
+
+    if opts.CustomWatermark != "" {
+         cmd := exec.Command("/usr/bin/composite", "-gravity","Center",opts.CustomWatermark, "-", "-")
+         cmd.Stdin = bytes.NewReader(buf)
+         modimage, err := cmd.Output()
+         if err != nil {
+            fmt.Printf("Error adding watermark: %s.\n", err);
+            mime := GetImageMimeType(bimg.DetermineImageType(buf))
+            return Image{Body: buf, Mime: mime}, nil
+         }
+         mime := GetImageMimeType(bimg.DetermineImageType(modimage))
+         return Image{Body: modimage, Mime: mime}, nil
+    }else{
+         mime := GetImageMimeType(bimg.DetermineImageType(buf))
+         return Image{Body: buf, Mime: mime}, nil
     }
-
-    mime := GetImageMimeType(bimg.DetermineImageType(modimage))
-    return Image{Body: modimage, Mime: mime}, nil
-
 }
+
