@@ -40,7 +40,7 @@ type ImageOptions struct {
 	Operations    PipelineOperations
     Image         string
     WatermarkOpacity       float32
-    CustomWatermark     string
+	CustomWatermark string
 }
 
 // PipelineOperation represents the structure for an operation field.
@@ -74,6 +74,7 @@ func BimgOptions(o ImageOptions) bimg.Options {
 		StripMetadata:  o.StripMetadata,
 		Type:           ImageType(o.Type),
 		Rotate:         bimg.Angle(o.Rotate),
+        CustomWatermark: o.CustomWatermark,
 	}
 
 	if len(o.Background) != 0 {

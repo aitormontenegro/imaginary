@@ -45,9 +45,9 @@ var allowedParams = map[string]string{
 	"sigma":       "float",
 	"minampl":     "float",
 	"operations":  "json",
-    "customwatermark":       "string",
     "image":    "string",
     "watermarkopacity":     "float",
+    "customwatermark":       "string",
 }
 
 func readParams(query url.Values) ImageOptions {
@@ -156,8 +156,8 @@ func mapImageParams(params map[string]interface{}) ImageOptions {
 		MinAmpl:       params["minampl"].(float64),
 		Operations:    params["operations"].(PipelineOperations),
         Image:         params["image"].(string),
-        CustomWatermark:         params["customwatermark"].(string),
         WatermarkOpacity:       float32(params["watermarkopacity"].(float64)),
+        CustomWatermark:         params["customwatermark"].(string),
 	}
 }
 
