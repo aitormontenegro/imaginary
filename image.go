@@ -349,9 +349,6 @@ func Process(buf []byte, opts bimg.Options) (out Image, err error) {
         return Image{Body: buforig, Mime: mime}, nil
     }
 
-    debug("--> %+v",opts)
-    debug("--> %s",opts.CustomWatermark)
-
     if opts.CustomWatermark != "" {
          cmd := exec.Command("/usr/bin/composite", "-gravity","Center",opts.CustomWatermark, "-", "-")
          cmd.Stdin = bytes.NewReader(buf)
