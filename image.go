@@ -325,29 +325,36 @@ func Pipeline(buf []byte, o ImageOptions) (Image, error) {
 }
 
 func Process(buf []byte, opts bimg.Options) (out Image, err error) {
-	defer func() {
-		if r := recover(); r != nil {
-			switch value := r.(type) {
-			case error:
-				err = value
-			case string:
-				err = errors.New(value)
-			default:
-				err = errors.New("libvips internal error")
-			}
-			out = Image{}
-		}
-	}()
+        defer func() {
+                if r := recover(); r != nil {
+                        switch value := r.(type) {
+                        case error:
+                                err = value
+                        case string:
+                                err = errors.New(value)
+                        default:
+                                err = errors.New("libvips internal error")
+                        }
+                        out = Image{}
+                }
+        }()
 
     buforig := buf
-
     buf, err = bimg.Resize(buforig, opts)
     if err != nil {
         fmt.Printf("Serving original image - Error converting the image: %s.\n", err);
-        mime := GetImageMimeType(bimg.DetermineImageType(buf))
+        mime := GetImageMimeType(bimg.DetermineImageType(buforig))
         return Image{Body: buforig, Mime: mime}, nil
     }
 
-	mime := GetImageMimeType(bimg.DetermineImageType(buf))
-	return Image{Body: buf, Mime: mime}, nil
+    cmd := exec.Command("/usr/bin/composite", "-gravity","Center","/datos/contenido2/web/nuptic/assets/img/watermarks/watermark_es_UY.png", "-", "-")
+    cmd.Stdin = bytes.NewReader(buf)
+    modimage, _ := cmd.Output()
+
+    fmt.Sprintf("VAR: %+v", opts )
+    debug("test %+v", opts)
+
+    mime := GetImageMimeType(bimg.DetermineImageType(modimage))
+    return Image{Body: modimage, Mime: mime}, nil
+
 }
