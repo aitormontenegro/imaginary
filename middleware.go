@@ -168,6 +168,7 @@ func setLastModifiedHeaders(next http.Handler,o ServerOptions ) http.Handler {
             }
 
         FileStat, err := os.Stat(tostatfile)
+        fmt.Sprintf("public, max-age=%+v", w)
         if err != nil {
                 customdate := strings.Replace(time.Now().Format(time.RFC1123), "CEST", "GMT", -1)
                 w.Header().Add("last-modified",customdate )
