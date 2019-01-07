@@ -128,6 +128,7 @@ func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOpt
     w.Header().Del("cache-control")
     w.Header().Del("etag")
     w.Header().Del("expires")
+    w.Header().Del("last-modified")
     w.WriteHeader(http.StatusNotFound)
     //w.Write(err.JSON())
 	return err
