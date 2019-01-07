@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"net/http"
-	"strings"
+    "net/http"
+    "strings"
+
 
 	bimg "gopkg.in/h2non/bimg.v1"
 )
@@ -120,9 +121,13 @@ func ErrorReply(req *http.Request, w http.ResponseWriter, err Error, o ServerOpt
 	if o.EnablePlaceholder || o.Placeholder != "" {
 		return replyWithPlaceholder(req, w, err, o)
 	}
-
 	//w.Header().Set("Content-Type", "application/json")
 	//w.WriteHeader(err.HTTPCode())
+
+    w.Header().Del("Server")
+    w.Header().Del("cache-control")
+    w.Header().Del("etag")
+    w.Header().Del("expires")
     w.WriteHeader(http.StatusNotFound)
     //w.Write(err.JSON())
 	return err
