@@ -88,6 +88,7 @@ func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, er
     }else{
         debug("Return cached file path\n")
         file = fullcachedirpathandfile
+        touchatime(fullcachedirpathandfile)
     }
 
     debug("Return file: %s\n", file);
@@ -127,15 +128,6 @@ func dofilecache(src, dst string) (int64, error) {
         }
     }
 
-        sourceFileStat, err := os.Stat(src)
-        if err != nil {
-                return 0, err
-        }
-        if !sourceFileStat.Mode().IsRegular() {
-                return 0, fmt.Errorf("%s is not a regular file", src)
-        }
-        modifiedtime := sourceFileStat.ModTime()
-
         source, err := ioutil.ReadFile(src)
         if err != nil {
                 return 0, err
@@ -163,8 +155,8 @@ func dofilecache(src, dst string) (int64, error) {
 
         var destinationFile = dst
         err = ioutil.WriteFile(destinationFile, image.Body, 0774)
-        os.Chtimes(destinationFile, time.Now().Local(), modifiedtime)
 
+        touchatime(destinationFile)
 
 
         if err != nil {
@@ -174,5 +166,18 @@ func dofilecache(src, dst string) (int64, error) {
         }
 
         return int64(len(image.Body)), err
+
+}
+func touchatime(srcfile string) (error) {
+
+        sourceFileStat, err := os.Stat(srcfile)
+        if err != nil {
+                return 0, err
+        }
+        if !sourceFileStat.Mode().IsRegular() {
+                return 0, fmt.Errorf("%s is not a regular file", src)
+        }
+        modifiedtime := sourceFileStat.ModTime()
+        os.Chtimes(srcfile, time.Now().Local(), modifiedtime)
 
 }
