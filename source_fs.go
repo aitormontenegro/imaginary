@@ -172,12 +172,14 @@ func touchatime(srcfile string) (error) {
 
         sourceFileStat, err := os.Stat(srcfile)
         if err != nil {
-                return 0, err
+                return err
         }
         if !sourceFileStat.Mode().IsRegular() {
-                return 0, fmt.Errorf("%s is not a regular file", src)
+                return fmt.Errorf("%s is not a regular file", srcfile)
         }
         modifiedtime := sourceFileStat.ModTime()
         os.Chtimes(srcfile, time.Now().Local(), modifiedtime)
+
+        return 0
 
 }
