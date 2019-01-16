@@ -180,6 +180,6 @@ func touchatime(srcfile string) (error) {
         modifiedtime := sourceFileStat.ModTime()
         os.Chtimes(srcfile, time.Now().Local(), modifiedtime)
 
-        return 0
+        return err
 
 }
