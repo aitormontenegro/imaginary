@@ -162,7 +162,7 @@ func dofilecache(src, dst string) (int64, error) {
 
         var destinationFile = dst
         err = ioutil.WriteFile(destinationFile, image.Body, 0774)
-        os.Chtimes(destinationFile, modifiedtime, modifiedtime)
+        os.Chtimes(destinationFile, time.Now(), modifiedtime)
 
 
 
