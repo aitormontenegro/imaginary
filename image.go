@@ -107,7 +107,7 @@ func Fit(buf []byte, o ImageOptions) (Image, error) {
         return Image{}, err
     }
 
-    if dims.Width < o.Width || dims.Height < o.Height {
+    if dims.Width < o.Width && dims.Height < o.Height {
         o.Width = dims.Width
         o.Height = dims.Height
     }else{
