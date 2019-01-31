@@ -1177,3 +1177,4 @@ Become a sponsor and get your logo on our README on Github with a link to your s
 MIT - Tomas Aparicio
 
 [![views](https://sourcegraph.com/api/repos/github.com/h2non/imaginary/.counters/views.svg)](https://sourcegraph.com/github.com/h2non/imaginary)
+
