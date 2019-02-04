@@ -173,15 +173,16 @@ func buildcachepath(regEx, url string) (str string) {
                         returnpath.WriteString("/")
                     }
                 case "letter":
-                    switch match[i] {
+/*                    switch match[i] {
                     case "E":
                         returnpath.WriteString("emp_base/")
                     case "C":
                         returnpath.WriteString("usr/")
                     default:
+*/
                         returnpath.WriteString(match[i])
                         returnpath.WriteString("/")
-                    }
+//                    }
                 case "imagename":
                     returnpath.WriteString(match[i])
                 default:
