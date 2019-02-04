@@ -165,13 +165,14 @@ func buildcachepath(regEx, url string) (str string) {
             if match[i] != "" {
                 switch name {
                 case "country":
-                    switch match[i] {
+/*                    switch match[i] {
                     case "gp-es":
                         returnpath.WriteString("es_ES/")
                     default:
+                        */
                         returnpath.WriteString(match[i])
                         returnpath.WriteString("/")
-                    }
+//                    }
                 case "letter":
 /*                    switch match[i] {
                     case "E":
