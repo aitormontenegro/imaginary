@@ -134,6 +134,7 @@ func main() {
 		EnablePlaceholder:  *aEnablePlaceholder,
 		EnableURLSignature: *aEnableURLSignature,
 		URLSignatureKey:    urlSignature.Key,
+        EnableLogs:         *aEnableLogs,
 		PathPrefix:         *aPathPrefix,
 		APIKey:             *aKey,
 		Concurrency:        *aConcurrency,

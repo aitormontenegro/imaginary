@@ -57,18 +57,25 @@ func (e Endpoints) IsValid(r *http.Request) bool {
 }
 
 func Server(o ServerOptions) error {
-    addr := o.Address + ":" + strconv.Itoa(o.Port)
-    handler := NewLog(NewServerMux(o), os.Stdout)
 
-    server := &http.Server{
-        Addr:           addr,
-        Handler:        handler,
-        MaxHeaderBytes: 1 << 20,
-        ReadTimeout:    time.Duration(o.HTTPReadTimeout) * time.Second,
-        WriteTimeout:   time.Duration(o.HTTPWriteTimeout) * time.Second,
-    }
+	addr := o.Address + ":" + strconv.Itoa(o.Port)
+	var handler http.Handler
 
-    return listenAndServe(server, o)
+	if o.EnableLogs == true {
+		handler = NewLog(NewServerMux(o), os.Stdout)
+	}else{
+		handler = NewLog(NewServerMux(o), ioutil.Discard)
+	}
+
+	server := &http.Server{
+		Addr:           addr,
+		Handler:        handler,
+		MaxHeaderBytes: 1 << 20,
+		ReadTimeout:    time.Duration(o.HTTPReadTimeout) * time.Second,
+		WriteTimeout:   time.Duration(o.HTTPWriteTimeout) * time.Second,
+	}
+
+	return listenAndServe(server, o)
 }
 
 func listenAndServe(s *http.Server, o ServerOptions) error {
