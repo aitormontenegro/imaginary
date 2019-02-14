@@ -82,13 +82,29 @@ func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, er
     file = path.Clean(path.Join(s.Config.MountPath, file))
     cach := ""
 
+
+    if  sourceFileStat, err := os.Stat(fullcachedirpathandfile); err == nil  {
+	if destFileStat, err := os.Stat(file); err == nil {
+
+		mtime := sourceFileStat.ModTime()
+	        debug("cached --> %+v",mtime)
+		mtime2 := destFileStat.ModTime()
+		debug("origin --> %+v",mtime2)
+		if mtime != mtime2 {
+		    debug("File removed")
+		    os.Remove(fullcachedirpathandfile)
+		}
+	}
+    }
+
     if _, err := os.Stat(fullcachedirpathandfile); os.IsNotExist(err) {
         debug("Return original file path\n")
         cach = fullcachedirpathandfile
+
     }else{
         debug("Return cached file path\n")
-        file = fullcachedirpathandfile
         touchatime(fullcachedirpathandfile)
+        file = fullcachedirpathandfile
     }
 
     debug("Return file: %s\n", file);
@@ -111,6 +127,7 @@ func defercache(src, dst string, c chan int64) () {
         }
         //delete file
     } else {
+	change_mtime(src,dst)
         debug("File cached!! (Image Generated: %d bytes, path: %s)\n", nBytes, dst)
     }
     c <- nBytes
@@ -170,6 +187,7 @@ func dofilecache(src, dst string) (int64, error) {
 }
 func touchatime(srcfile string) (error) {
 
+
         sourceFileStat, err := os.Stat(srcfile)
         if err != nil {
                 return err
@@ -181,5 +199,19 @@ func touchatime(srcfile string) (error) {
         os.Chtimes(srcfile, time.Now().Local(), modifiedtime)
 
         return err
+
+}
+func change_mtime(srcfile, destfile string) (error) {
+
+	debug("Change mtime IN")
+	debug("%+v",srcfile)
+	debug("%+v",destfile)
+
+	sfi, err := os.Stat(srcfile)
+	smtime := sfi.ModTime()
+
+        os.Chtimes(destfile, time.Now().Local(), smtime)
+
+	return err
 
 }
