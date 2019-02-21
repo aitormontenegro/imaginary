@@ -99,7 +99,7 @@ func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, er
 
     if _, err := os.Stat(fullcachedirpathandfile); os.IsNotExist(err) {
         debug("Return original file path\n")
-        # Monit pedido por Borja:
+        // Monit pedido por Borja:
         fmt.Printf"Serving file from Isilon: %s\n",file)
         cach = fullcachedirpathandfile
 
