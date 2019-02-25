@@ -190,10 +190,10 @@ func buildcachepath(regEx, url string) (str string) {
                     returnpath.WriteString(match[i])
                     returnpath.WriteString("/")
                 }
-                debug("%+v", name)
+                //debug("%+v", name)
                 //			returnpath.WriteString(match[i])
             }
-            debug("%+v", match[i])
+            //debug("%+v", match[i])
         }
     }
     return returnpath.String()
