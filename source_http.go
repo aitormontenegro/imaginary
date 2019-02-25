@@ -89,7 +89,7 @@ func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
         }
         c := make(chan int64)
         go cach_file(buf,fullpath,c)
-        debug("Serving downloaded s3 file: %s", string(url))
+        debug("Serving downloaded s3 file: %s", url.String())
         return buf, nil
     }
 }
