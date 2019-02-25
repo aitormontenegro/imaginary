@@ -43,12 +43,13 @@ func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
     //debug( "%+v", buildcachepath(r, url.String()))
     //debug( "%+v", s.Config.CacheDirPath)
     fullpath := s.Config.CacheDirPath + "/" + buildcachepath(r, url.String())
-    debug(fullpath);
+    // debug(fullpath);
     if (is_file_cached(fullpath)) {
         buf, err := ioutil.ReadFile(fullpath)
         if err != nil {
             return nil, ErrInvalidFilePath
         }
+        debug("Serving cached file.")
         return buf, nil
 
     } else {
@@ -88,6 +89,7 @@ func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
         }
         c := make(chan int64)
         go cach_file(buf,fullpath,c)
+        debug("Serving downloaded s3 file: %s", string(url))
         return buf, nil
     }
 }
@@ -203,10 +205,10 @@ func is_file_cached(fullpath string) (present bool) {
 
     debug(fullpath)
     if _, err := os.Stat(fullpath); os.IsNotExist(err) {
-        debug("File does not exists\n")
+        debug("File does not exists in cache\n")
         return false
     }else{
-        debug("File exists\n")
+        debug("File exists in cache\n")
         return true
     }
 
