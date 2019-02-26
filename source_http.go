@@ -49,7 +49,8 @@ func (s *HttpImageSource) fetchImage(url *url.URL, ireq *http.Request) ([]byte, 
         if err != nil {
             return nil, ErrInvalidFilePath
         }
-        debug("Serving cached file.")
+        //debug("Serving cached file.")
+        fmt.Printf("Serving cached file: %s",fullpath)
         return buf, nil
 
     } else {
