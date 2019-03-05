@@ -37,15 +37,24 @@ func (s *FileSystemImageSource) GetImage(r *http.Request) ([]byte, error) {
     }
 
     file, cache, err := s.buildPath_cache(file)
+    debug("4- %+v", file)
+    debug("5- %+v", cache)
+    debug("6- %+v", err)
+
+    allurl := strings.Split(file, "?")
+    debug("7- %+v", allurl[0])
+
     if err != nil {
         return nil, err
     }
 
     if cache != "" {
+	file = allurl[0]
         c := make(chan int64)
         go defercache(file,cache,c)
     }
 
+    debug("9- %+v", file)
     return s.read(file)
 }
 
@@ -83,6 +92,7 @@ func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, er
     cach := ""
 
 
+/*
     if  sourceFileStat, err := os.Stat(fullcachedirpathandfile); err == nil  {
 	if destFileStat, err := os.Stat(file); err == nil {
 
@@ -96,6 +106,7 @@ func (s *FileSystemImageSource) buildPath_cache(file string) (string, string, er
 		}
 	}
     }
+*/
 
     if _, err := os.Stat(fullcachedirpathandfile); os.IsNotExist(err) {
         debug("Return original file path\n")
